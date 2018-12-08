@@ -14,3 +14,11 @@ services:
       context: .
     environment:
       - REPLICA_UUID=0e44fbf7-ebf9-45e0-9672-aeaaf09c508e 
+
+  router:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 3301:3301
+    command: ["tarantool", "dict/router/init.lua"]
