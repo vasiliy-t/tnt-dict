@@ -3,7 +3,7 @@ version = "scm-1"
 
 description = {
     summary = "clustered dictionary storage",
-    homepage = "https://github.com/vasiliy-t/tarantool.git"
+    homepage = "https://github.com/vasiliy-t/tnt-dict.git"
 }
 
 dependencies = {
@@ -16,7 +16,7 @@ dependencies = {
 }
 
 source = {
-    url = "git@github.com/vasiliy-t/tarantool.git"
+    url = "git@github.com/vasiliy-t/tnt-dict.git"
 }
 
 build = {

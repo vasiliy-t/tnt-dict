@@ -21,4 +21,5 @@ services:
       context: .
     ports:
       - 3301:3301
+      - 9000:9000
     command: ["tarantool", "dict/router/init.lua"]
