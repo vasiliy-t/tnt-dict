@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  storage_1:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      - REPLICA_UUID=b713e340-6df3-44c7-b55b-dbc9413c46f2
+
+  storage_2:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      - REPLICA_UUID=0e44fbf7-ebf9-45e0-9672-aeaaf09c508e 
