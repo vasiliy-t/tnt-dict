@@ -7,7 +7,7 @@ local vshard = require("vshard")
 local config = require("dict.config")
 
 local function generate()
-    for i = 1, 1000 * 1000, 1 do
+    for i = 1, 1000 * 3, 1 do
         local name = uuid.str()
         local record = {
             bucket_id = vshard.router.bucket_id(name),
