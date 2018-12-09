@@ -1,6 +1,5 @@
 local log = require("log")
 local json = require("json")
-local expirationd = require("expirationd")
 
 local vshard = require("vshard")
 local config = require("dict.config")
@@ -22,24 +21,6 @@ box.once('create dict cache space', function()
     })
     dict_cache:create_index("primary", { type = "hash", parts = { "name" }})
 end)
-
-local function is_expired(args, tuple)
-    local t = tuple:tomap({names_only = true})
-    return (os.time() - t.created) > 10
-end
-
-local function delete(space_id, args, tuple)
-    local t = tuple:tomap({names_only=true})
-    log.verbose("expirationd: collecting tuple %s from space %s", t.name, box.space[space_id].name)
-    box.space[space_id]:delete(t.name)
-end
-
-expirationd.start('expire_dict_cache', box.space.dict_cache.id, is_expired, {
-    process_expired_tuple = delete,
-    args = nil,
-    tuples_per_iteration = 50,
-    full_scan_time = 3600
-})
 
 local function load_record(name)
     local val = box.space.dict_cache:get(name)
@@ -82,3 +63,4 @@ end
 local httpd = require("http.server").new("0.0.0.0", 9000, {})
 httpd:route({ path = "/dictionary/:record_name", method = "GET" }, get_dictionary_record_handler)
 httpd:start()
+require("dict.router.dict_cache").init(box.space.dict_cache.id)
