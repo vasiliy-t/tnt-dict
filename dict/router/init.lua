@@ -1,5 +1,6 @@
 local log = require("log")
 local json = require("json")
+local expirationd = require("expirationd")
 
 local vshard = require("vshard")
 local config = require("dict.config")
@@ -16,10 +17,29 @@ box.once('create dict cache space', function()
         { name = 'bucket_id', type = 'unsigned' },
         { name = 'id', type = 'unsigned' },
         { name = 'name', type = 'string' },
-        { name = 'value', type = 'string' }
+        { name = 'value', type = 'string' },
+        { name = 'created', type = 'unsigned' }
     })
     dict_cache:create_index("primary", { type = "hash", parts = { "name" }})
 end)
+
+local function is_expired(args, tuple)
+    local t = tuple:tomap({names_only = true})
+    return (os.time() - t.created) > 10
+end
+
+local function delete(space_id, args, tuple)
+    local t = tuple:tomap({names_only=true})
+    log.verbose("expirationd: collecting tuple %s from space %s", t.name, box.space[space_id].name)
+    box.space[space_id]:delete(t.name)
+end
+
+expirationd.start('expire_dict_cache', box.space.dict_cache.id, is_expired, {
+    process_expired_tuple = delete,
+    args = nil,
+    tuples_per_iteration = 50,
+    full_scan_time = 3600
+})
 
 local function load_record(name)
     local val = box.space.dict_cache:get(name)
@@ -35,9 +55,13 @@ local function load_record(name)
     
     if val ~= nil then
         log.verbose("cache miss")
+
+        val.created = os.time()
         box.space.dict_cache:replace(box.space.dict_cache:frommap(val))
+
 	return val
     end
+
     return nil, "unexpected behaviour"
 end
 

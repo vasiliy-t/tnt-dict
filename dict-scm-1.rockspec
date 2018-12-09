@@ -12,7 +12,8 @@ dependencies = {
     'lua-term == 0.7',
     'checks == 2.1.1',
     'vshard == 0.1.7',
-    'icu-date == 1.2.1'
+    'icu-date == 1.2.1',
+    'expirationd'
 }
 
 source = {
