@@ -1,0 +1,16 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    container:
+      image: tarantool/tarantool:1.10.3
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Run a one-line script
+      run: ls -lah $PWD
