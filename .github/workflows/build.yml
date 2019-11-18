@@ -6,9 +6,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
-    container:
-      image: tarantool/tarantool:1.10.3
 
     steps:
     - uses: actions/checkout@master
@@ -21,7 +18,7 @@ jobs:
     - name: chmod kubectl
       run: chmod +x ./kubectl
     - name: create cluster
-      run: kind create cluster --config config.yml
+      run: ./kind create cluster --config config.yml
     - name: setup kubeconfig
       run: export KUBECONFIG="$(./kind get kubeconfig-path --name="kind")"
     - name: show cluster info
