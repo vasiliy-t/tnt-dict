@@ -13,4 +13,17 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Run a one-line script
-      run: tarantoolctl rocks make
+      run: curl -Lo ./kind https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-$(uname)-amd64
+    - name: chmod kind
+      run: chmod +x ./kind
+    - name: download kubectl
+      run: curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+    - name: chmod kubectl
+      run: chmod +x ./kubectl
+    - name: create cluster
+      run: kind create cluster --config config.yml
+    - name: setup kubeconfig
+      run: export KUBECONFIG="$(./kind get kubeconfig-path --name="kind")"
+    - name: show cluster info
+      run: ./kubectl cluster-info
+
