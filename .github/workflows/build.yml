@@ -19,8 +19,6 @@ jobs:
       run: chmod +x ./kubectl
     - name: create cluster
       run: ./kind create cluster --config config.yml
-    - name: setup kubeconfig
-      run: export KUBECONFIG="$(./kind get kubeconfig-path --name="kind")"
     - name: show cluster info
-      run: ./kubectl cluster-info
+      run: KUBECONFIG="$(./kind get kubeconfig-path --name="kind")" ./kubectl cluster-info
 
